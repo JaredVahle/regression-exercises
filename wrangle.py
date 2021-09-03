@@ -53,5 +53,7 @@ def wrangle_zillow():
     df.drop(columns = ["Unnamed: 0"],inplace = True)
     df.fips = df.fips.astype("object")
     df.year_built = df.year_built.astype("object")
+    # brings back only houses that are under 1 million which is a majority of the data on zillow
+    df = df[df["tax_value_dollar_count"] < 1000000]
 
     return df
