@@ -51,6 +51,7 @@ def wrangle_zillow():
     # Drops all values that are still null
     df = df.dropna()
     df.drop(columns = ["Unnamed: 0"],inplace = True)
-    df.astype("int")
+    df.fips = df.fips.astype("object")
+    df.year_built = df.year_built.astype("object")
 
     return df
