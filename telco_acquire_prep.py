@@ -1,6 +1,8 @@
 import env
 import os
 import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
 
 def get_connection(db, user=env.user, host=env.host, password=env.password):
     return f'mysql+pymysql://{user}:{password}@{host}/{db}'
@@ -68,7 +70,7 @@ def split_telco_data(df):
     """
     splits the data in train validate and test 
     """
-    train, test = train_test_split(df, test_size = 0.2, random_state = 123, stratify = df.survived)
-    train, validate = train_test_split(train, test_size=.25, random_state=123, stratify=train.survived)
+    train, test = train_test_split(df, test_size = 0.2, random_state = 123, stratify = df.churn)
+    train, validate = train_test_split(train, test_size=.25, random_state=123, stratify=train.churn)
     
     return train, validate, test
