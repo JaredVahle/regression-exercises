@@ -74,3 +74,20 @@ def split_telco_data(df):
     train, validate = train_test_split(train, test_size=.25, random_state=123, stratify=train.churn)
     
     return train, validate, test
+
+def get_mall_data():
+    filename = "mall.csv"
+
+    if os.path.isfile("mall.csv"):
+        return pd.read_csv("mall.csv")
+    else:
+        # read the SQL query into a dataframe
+        df = pd.read_sql('''
+SELECT *
+FROM customers;
+''', get_connection("mall_customers"))
+        # Write that dataframe to disk for later. Called "caching" the data for later.
+        df.to_csv("mall.csv")
+
+        # Return the dataframe to the calling code
+        return df
