@@ -37,6 +37,26 @@ def rename_zillow_cols(df):
                        "taxamount":"tax_amount"},inplace = True)
     return df
 
+def remove_outliers(df, k, col_list):
+    ''' remove outliers from a list of columns in a dataframe 
+        and return that dataframe
+    '''
+    
+    for col in col_list:
+
+        q1, q3 = df[col].quantile([.25, .75])  # get quartiles
+        
+        iqr = q3 - q1   # calculate interquartile range
+        
+        upper_bound = q3 + k * iqr   # get upper bound
+        lower_bound = q1 - k * iqr   # get lower bound
+
+        # return dataframe without outliers
+        
+        df = df[(df[col] > lower_bound) & (df[col] < upper_bound)]
+        
+    return df
+
 def wrangle_zillow():
     # reads in our zillow csv into a pandas dataframe
     df = pd.read_csv('zillow.csv')
@@ -53,7 +73,12 @@ def wrangle_zillow():
     df.drop(columns = ["Unnamed: 0"],inplace = True)
     df.fips = df.fips.astype("object")
     df.year_built = df.year_built.astype("object")
-    # brings back only houses that are under 1 million which is a majority of the data on zillow
-    df = df[df["tax_value_dollar_count"] < 1000000]
 
-    return df
+    # removes all the outliers that are out of the quartile range for the list of values given.
+    df = remove_outliers(df, 1.5, ['bedroom_count', 'bathroom_count', 'area', 'tax_value', 'tax_amount'])
+
+    # Splitting the data into train validate and test
+    train_validate, test = train_test_split(df, test_size=.2, random_state=123)
+    train, validate = train_test_split(train_validate, test_size=.3, random_state=123)
+
+    return train, validate, test

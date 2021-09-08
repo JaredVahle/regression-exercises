@@ -24,3 +24,6 @@ def plot_variable_pairs(train):
         plt.show()
         column = col
 
+
+def pair_plot_with_regression(train):
+    sns.pairplot(train, kind = "reg", size = 500)
