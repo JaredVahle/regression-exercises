@@ -10,27 +10,22 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 
-def plot_residual(df):
+def plot_residual(df,x):
     plt.figure(figsize = (11,5))
 
     plt.subplot(121)
-    plt.scatter(x, df.baseline_residual)
+    plt.scatter(df[x], df.baseline_residual)
     plt.axhline(y = 0, ls = ':')
     plt.xlabel('x')
     plt.ylabel('Residual')
     plt.title('Baseline Residuals')
 
     plt.subplot(122)
-    plt.scatter(x, df.residual)
+    plt.scatter(df[x], df.residual)
     plt.axhline(y = 0, ls = ':')
     plt.xlabel('x')
     plt.ylabel('Residual')
     plt.title('OLS model residuals')
-
-def get_residual(df):
-    df['residual'] = y - df.yhat
-    df['baseline_residual'] = y - df.baseline
-    return df
 
 def get_residual_squared(df):
     df['residual^2'] = df.residual**2
@@ -43,12 +38,12 @@ def get_sse(df,residual_squared):
     
     return SSE
 
-def get_mse(SSE):
+def get_mse(df,SSE):
     MSE = SSE/len(df)
     print("MSE = ", "{:.1f}".format(MSE))
     return MSE
 
-def get_RMSE(MSE):
+def get_rmse(MSE):
     RMSE = sqrt(MSE)
     print("RMSE = ", "{:.1f}".format(RMSE))
     return RMSE
